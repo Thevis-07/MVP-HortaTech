@@ -23,6 +23,17 @@ interface Props {
   sensor: SensorKind;
 }
 
+interface SoloHistoryRow {
+  timestamp: string;
+  umidade: number;
+}
+
+interface AirHistoryRow {
+  timestamp: string;
+  temperatura: number;
+  umidade: number;
+}
+
 const CHUNK_SIZE = 40;
 
 function formatTimestamp(ts: string): string {
@@ -72,10 +83,11 @@ function getMeta(sensor: SensorKind) {
 export default function SensorHistoryPage({ sensor }: Props) {
   const { sensor1, sensor2, sensorAr, loading, error } = useFirebaseData();
   const [visibleCount, setVisibleCount] = useState(CHUNK_SIZE);
+  const isAirSensor = sensor === "ar";
 
   const meta = getMeta(sensor);
 
-  const fullData = useMemo(() => {
+  const fullData = useMemo<(SoloHistoryRow | AirHistoryRow)[]>(() => {
     if (sensor === "solo-1") {
       return sensor1
         .slice()
@@ -107,6 +119,8 @@ export default function SensorHistoryPage({ sensor }: Props) {
   }, [sensor, sensor1, sensor2, sensorAr]);
 
   const visibleRows = fullData.slice(0, visibleCount);
+  const visibleSoloRows = visibleRows as SoloHistoryRow[];
+  const visibleAirRows = visibleRows as AirHistoryRow[];
   const chartData = visibleRows.slice().reverse().map((r) => ({
     ...r,
     time: formatTimestamp(String(r.timestamp)).slice(-5),
@@ -161,7 +175,7 @@ export default function SensorHistoryPage({ sensor }: Props) {
             <div className="h-56 flex items-center justify-center text-green-300 font-body">
               Sem dados disponiveis
             </div>
-          ) : sensor === "ar" ? (
+          ) : isAirSensor ? (
             <ResponsiveContainer width="100%" height={300}>
               <ComposedChart data={chartData} margin={{ top: 5, right: 12, left: -20, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e8f5e8" />
@@ -245,7 +259,7 @@ export default function SensorHistoryPage({ sensor }: Props) {
                   <th className="px-4 py-3 text-left text-xs font-body font-medium text-green-600 uppercase tracking-wider">
                     Horario
                   </th>
-                  {sensor === "ar" ? (
+                  {isAirSensor ? (
                     <>
                       <th className="px-3 py-3 text-right text-xs font-body font-medium text-green-600 uppercase tracking-wider">
                         Temperatura
@@ -262,28 +276,39 @@ export default function SensorHistoryPage({ sensor }: Props) {
                 </tr>
               </thead>
               <tbody>
-                {visibleRows.map((row, idx) => (
-                  <tr key={`${row.timestamp}-${idx}`} className="border-t border-green-50 hover:bg-green-50/50 transition-colors">
-                    <td className="px-4 py-2.5 text-xs font-mono text-gray-500">{formatTimestamp(String(row.timestamp))}</td>
-                    {sensor === "ar" ? (
-                      <>
+                {isAirSensor
+                  ? visibleAirRows.map((row, idx) => (
+                      <tr
+                        key={`${row.timestamp}-${idx}`}
+                        className="border-t border-green-50 hover:bg-green-50/50 transition-colors"
+                      >
+                        <td className="px-4 py-2.5 text-xs font-mono text-gray-500">
+                          {formatTimestamp(String(row.timestamp))}
+                        </td>
                         <td className="px-3 py-2.5 text-right text-sm font-body font-semibold text-amber-600">
-                          {(row as { temperatura: number }).temperatura.toFixed(1)}
+                          {row.temperatura.toFixed(1)}
                           <span className="text-xs font-normal text-gray-400 ml-0.5">°C</span>
                         </td>
                         <td className="px-3 py-2.5 text-right text-sm font-body font-semibold text-emerald-600">
-                          {(row as { umidade: number }).umidade.toFixed(1)}
+                          {row.umidade.toFixed(1)}
                           <span className="text-xs font-normal text-gray-400 ml-0.5">%</span>
                         </td>
-                      </>
-                    ) : (
-                      <td className="px-3 py-2.5 text-right text-sm font-body font-semibold text-emerald-600">
-                        {(row as { umidade: number }).umidade.toFixed(1)}
-                        <span className="text-xs font-normal text-gray-400 ml-0.5">%</span>
-                      </td>
-                    )}
-                  </tr>
-                ))}
+                      </tr>
+                    ))
+                  : visibleSoloRows.map((row, idx) => (
+                      <tr
+                        key={`${row.timestamp}-${idx}`}
+                        className="border-t border-green-50 hover:bg-green-50/50 transition-colors"
+                      >
+                        <td className="px-4 py-2.5 text-xs font-mono text-gray-500">
+                          {formatTimestamp(String(row.timestamp))}
+                        </td>
+                        <td className="px-3 py-2.5 text-right text-sm font-body font-semibold text-emerald-600">
+                          {row.umidade.toFixed(1)}
+                          <span className="text-xs font-normal text-gray-400 ml-0.5">%</span>
+                        </td>
+                      </tr>
+                    ))}
               </tbody>
             </table>
           </div>
