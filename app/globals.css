@@ -1,0 +1,36 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --green-primary: #208220;
+  --green-light: #4ebe4e;
+  --green-pale: #f0faf0;
+  --green-dark: #134213;
+  --white: #ffffff;
+  --mist: #f8fdf8;
+  --text-main: #1a2e14;
+  --text-muted: #4a7a3a;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--mist);
+  color: var(--text-main);
+  font-family: 'DM Sans', system-ui, sans-serif;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #e8f5e8;
+}
+::-webkit-scrollbar-thumb {
+  background: #86d986;
+  border-radius: 3px;
+}
