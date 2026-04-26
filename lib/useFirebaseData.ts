@@ -1,30 +1,14 @@
-// lib/useFirebaseData.ts
 "use client";
 
 import { useEffect, useState } from "react";
 import { ref, onValue, off } from "firebase/database";
 import { database, signIn } from "./firebase";
-
-export interface SoloUmidadeEntry {
-  timestamp: string;
-  umidade: number;
-}
-
-export interface ArTemperaturaUmidadeEntry {
-  id: string;
-  horario: string;
-  temperatura: number;
-  umidade: number;
-}
-
-export interface DashboardData {
-  sensor1: SoloUmidadeEntry[];
-  sensor2: SoloUmidadeEntry[];
-  sensorAr: ArTemperaturaUmidadeEntry[];
-  loading: boolean;
-  error: string | null;
-  authenticated: boolean;
-}
+import { FIREBASE_PATHS } from "./constants";
+import type {
+  SoloUmidadeEntry,
+  ArTemperaturaUmidadeEntry,
+  DashboardData,
+} from "@/types/sensors";
 
 function parseSoloSensor(raw: Record<string, unknown>): SoloUmidadeEntry[] {
   if (!raw) return [];
@@ -76,21 +60,17 @@ export function useFirebaseData(): DashboardData {
 
         setData((d) => ({ ...d, authenticated: true }));
 
-        const sensorPath = ref(database, "Sensores");
+        const rootRef = ref(database, FIREBASE_PATHS.root);
+        refs.push(rootRef);
 
-        refs.push(sensorPath);
-        onValue(sensorPath, (snapshot) => {
+        onValue(rootRef, (snapshot) => {
           if (!mounted) return;
           const val = snapshot.val() as Record<string, unknown>;
 
-          const sensor1Raw = val?.sensor_1_solo_umidade as Record<string, unknown>;
-          const sensor2Raw = val?.sensor_2_solo_umidade as Record<string, unknown>;
-          const arRaw = val?.sensor_ar_temperatura_umidade as Record<string, unknown>;
-
           setData({
-            sensor1: parseSoloSensor(sensor1Raw),
-            sensor2: parseSoloSensor(sensor2Raw),
-            sensorAr: parseArSensor(arRaw),
+            sensor1: parseSoloSensor(val?.[FIREBASE_PATHS.solo1] as Record<string, unknown>),
+            sensor2: parseSoloSensor(val?.[FIREBASE_PATHS.solo2] as Record<string, unknown>),
+            sensorAr: parseArSensor(val?.[FIREBASE_PATHS.ar] as Record<string, unknown>),
             loading: false,
             error: null,
             authenticated: true,

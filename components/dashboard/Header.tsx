@@ -2,13 +2,12 @@
 
 import { Leaf, Wifi, WifiOff } from "lucide-react";
 
-interface HeaderProps {
+interface Props {
   authenticated: boolean;
 }
 
-export default function Header({ authenticated }: HeaderProps) {
-  const now = new Date();
-  const formatted = now.toLocaleDateString("pt-BR", {
+export default function Header({ authenticated }: Props) {
+  const formatted = new Date().toLocaleDateString("pt-BR", {
     weekday: "long",
     year: "numeric",
     month: "long",
@@ -30,28 +29,24 @@ export default function Header({ authenticated }: HeaderProps) {
           </div>
         </div>
 
-        <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-green-100 shadow-sm">
+        <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-gray-200 shadow-md">
           {authenticated ? (
             <>
               <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse2" />
               <Wifi size={14} className="text-green-600" />
-              <span className="text-green-700 text-sm font-body font-medium">
-                Conectado
-              </span>
+              <span className="text-green-700 text-sm font-body font-medium">Conectado</span>
             </>
           ) : (
             <>
               <span className="w-2 h-2 rounded-full bg-red-400" />
               <WifiOff size={14} className="text-red-500" />
-              <span className="text-red-600 text-sm font-body">
-                Desconectado
-              </span>
+              <span className="text-red-600 text-sm font-body">Desconectado</span>
             </>
           )}
         </div>
       </div>
 
-      <div className="mt-6 h-px bg-gradient-to-r from-green-200 via-emerald-300 to-transparent" />
+      <div className="mt-6 h-px bg-green-800/20" />
     </div>
   );
 }

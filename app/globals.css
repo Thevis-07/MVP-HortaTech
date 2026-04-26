@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -9,7 +9,7 @@
   --green-pale: #f0faf0;
   --green-dark: #134213;
   --white: #ffffff;
-  --mist: #f8fdf8;
+  --mist: #dce5dc;
   --text-main: #1a2e14;
   --text-muted: #4a7a3a;
 }
@@ -21,7 +21,7 @@
 body {
   background: var(--mist);
   color: var(--text-main);
-  font-family: 'DM Sans', system-ui, sans-serif;
+  font-family: 'Inter', system-ui, sans-serif;
 }
 
 ::-webkit-scrollbar {
