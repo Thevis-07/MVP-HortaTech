@@ -1,4 +1,4 @@
-import SensorHistoryPage from "@/components/SensorHistoryPage";
+import SensorHistoryPage from "@/components/history/SensorHistoryPage";
 import { notFound } from "next/navigation";
 
 const allowed = ["solo-1", "solo-2", "ar"] as const;
