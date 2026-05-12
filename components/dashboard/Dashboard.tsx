@@ -10,6 +10,7 @@ import HistoryTable from "@/components/history/HistoryTable";
 import LoadingScreen from "@/components/ui/LoadingScreen";
 import ErrorScreen from "@/components/ui/ErrorScreen";
 import WeatherWidget from "./WeatherWidget";
+import HortaMap from "./HortaMap";
 import { DASHBOARD_HISTORY_PREVIEW } from "@/lib/constants";
 
 function avg(values: number[]): number {
@@ -123,6 +124,10 @@ export default function Dashboard() {
             icon={<Wind size={16} />}
             detailHref="/historico/ar"
           />
+        </div>
+
+        <div className="mt-8">
+          <HortaMap />
         </div>
 
         <div className="mt-10 text-center">
